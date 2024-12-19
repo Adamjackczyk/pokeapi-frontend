@@ -4,6 +4,75 @@
   padding: 0 20px;
 }
 
+.main__intro {
+  text-align: center;
+  padding: 2rem;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+}
+
+.main__intro-title {
+  font-size: 2.5rem;
+  color: #ffcb05;
+  text-shadow: 2px 2px #2a75bb;
+}
+
+.main__intro-text {
+  font-size: 1.2rem;
+  color: #333;
+  margin-top: 1rem;
+  line-height: 1.5;
+}
+
+.main__search {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.main__search-title {
+  text-align: center;
+  font-size: 1.8rem;
+  color: #2a75bb;
+  margin-bottom: 1rem;
+}
+
+.main__search-results {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.main__ditto-placeholder {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.main__ditto-image {
+  width: 150px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.main__ditto-text {
+  font-size: 2rem;
+  color: #2a75bb;
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+.main__no-results {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #ff0000;
+}
+
 .main__title {
   font-size: 2rem;
   color: #333;
