@@ -1,12 +1,14 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import PropTypes from "prop-types";
+import { Link } from "react-router-dom"; // Import Link from React Router
 import "./Header.css";
 
 const Header = () => {
   return (
     <header className="header">
-      <h1 className="header__title">PokeAPI Frontend</h1>
+      {/* Wrap the logo in a Link component */}
+      <Link to="/" className="header__title-link">
+        <h1 className="header__title">PokeAPI Frontend</h1>
+      </Link>
       <nav className="header__nav">
         <Link to="/" className="header__link">
           Home
@@ -17,10 +19,6 @@ const Header = () => {
       </nav>
     </header>
   );
-};
-
-Header.propTypes = {
-  // Define prop types if any props are passed in the future
 };
 
 export default Header;

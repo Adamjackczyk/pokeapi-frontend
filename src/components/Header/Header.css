@@ -18,6 +18,12 @@
   gap: 15px;
 }
 
+.header__title-link {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
 .header__link {
   color: white;
   text-decoration: none;
