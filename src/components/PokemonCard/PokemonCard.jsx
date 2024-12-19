@@ -21,6 +21,7 @@ const PokemonCard = ({ name, url }) => {
       }
       const data = await response.json();
       setDetails(data);
+      await fetchEvolutionChain(data.species.url);
     } catch (error) {
       console.error("Error fetching Pokémon details:", error);
     } finally {
@@ -42,11 +43,10 @@ const PokemonCard = ({ name, url }) => {
   };
 
   // Function to fetch the evolution chain
-  const fetchEvolutionChain = async () => {
-    if (!details?.species?.url) return;
+  const fetchEvolutionChain = async (speciesUrl) => {
     setLoadingEvolution(true);
     try {
-      const speciesResponse = await fetch(details.species.url);
+      const speciesResponse = await fetch(speciesUrl);
       const speciesData = await speciesResponse.json();
       const evolutionResponse = await fetch(speciesData.evolution_chain.url);
       const evolutionData = await evolutionResponse.json();
@@ -62,7 +62,6 @@ const PokemonCard = ({ name, url }) => {
   // Navigate to a specific Pokémon in the evolution chain
   const navigateEvolution = async (pokemonName) => {
     await fetchDetails(pokemonName);
-    setEvolutionChain([]); // Reset the chain to ensure fresh fetch
     setExpanded(false); // Collapse details on navigation
   };
 
@@ -118,14 +117,18 @@ const PokemonCard = ({ name, url }) => {
               </ul>
 
               {/* Evolution Navigation */}
-              <button
-                onClick={fetchEvolutionChain}
-                className="pokemon-card__toggle"
-              >
-                {loadingEvolution ? "Loading Evolutions..." : "View Evolutions"}
-              </button>
+              {/* {evolutionChain.length > 1 && (
+                <button
+                  onClick={() => setExpanded(true)}
+                  className="pokemon-card__toggle"
+                >
+                  {loadingEvolution
+                    ? "Loading Evolutions..."
+                    : "View Evolutions"}
+                </button>
+              )} */}
 
-              {evolutionChain.length > 0 && (
+              {evolutionChain.length > 1 && expanded && (
                 <div className="pokemon-card__evolutions">
                   {(() => {
                     const currentIndex = evolutionChain.indexOf(details.name);
