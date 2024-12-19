@@ -90,3 +90,24 @@
     font-size: 12px;
   }
 }
+
+.pokemon-card__evolutions {
+  margin-top: 16px;
+}
+
+.pokemon-card__evolution-button {
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  margin: 8px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.pokemon-card__evolution-button:hover {
+  background-color: #45a049;
+  transform: scale(1.05);
+}
