@@ -4,6 +4,7 @@ import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
 import Main from "./components/Main/Main";
 import DataPage from "./components/DataPage/DataPage";
+import BackToTop from "./components/BackToTop/BackToTop";
 import "./App.css";
 
 const App = () => {
@@ -16,6 +17,7 @@ const App = () => {
           <Route path="/data" element={<DataPage />} />
         </Routes>
       </div>
+      <BackToTop />
       <Footer />
     </div>
   );
