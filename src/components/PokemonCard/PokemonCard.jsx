@@ -29,19 +29,6 @@ const PokemonCard = ({ name, url }) => {
     }
   };
 
-  // Function to flatten the evolution chain
-  const flattenEvolutionChain = (chain) => {
-    const flatChain = [];
-    let current = chain;
-
-    while (current) {
-      flatChain.push(current.species.name);
-      current = current.evolves_to[0] || null;
-    }
-
-    return flatChain;
-  };
-
   // Function to fetch the evolution chain
   const fetchEvolutionChain = async (speciesUrl) => {
     setLoadingEvolution(true);
@@ -50,8 +37,8 @@ const PokemonCard = ({ name, url }) => {
       const speciesData = await speciesResponse.json();
       const evolutionResponse = await fetch(speciesData.evolution_chain.url);
       const evolutionData = await evolutionResponse.json();
-      const flattenedChain = flattenEvolutionChain(evolutionData.chain);
-      setEvolutionChain(flattenedChain);
+      const paths = flattenEvolutionChain(evolutionData.chain);
+      setEvolutionChain(paths);
     } catch (error) {
       console.error("Error fetching evolution chain:", error);
     } finally {
@@ -59,10 +46,30 @@ const PokemonCard = ({ name, url }) => {
     }
   };
 
+  // Function to flatten the evolution chain into multiple paths
+  const flattenEvolutionChain = (chain) => {
+    const evolutionPaths = [];
+
+    const traverseChain = (currentChain, currentPath = []) => {
+      const newPath = [...currentPath, currentChain.species.name];
+
+      if (currentChain.evolves_to.length === 0) {
+        evolutionPaths.push(newPath);
+      } else {
+        currentChain.evolves_to.forEach((evolution) => {
+          traverseChain(evolution, newPath);
+        });
+      }
+    };
+
+    traverseChain(chain);
+    return evolutionPaths;
+  };
+
   // Navigate to a specific Pokémon in the evolution chain
   const navigateEvolution = async (pokemonName) => {
     await fetchDetails(pokemonName);
-    setExpanded(false); // Collapse details on navigation
+    setExpanded(true);
   };
 
   // Fetch initial Pokémon details
@@ -125,68 +132,82 @@ const PokemonCard = ({ name, url }) => {
                 ))}
               </div>
 
-              {/* Evolution Navigation */}
-              {/* {evolutionChain.length > 1 && (
-                <button
-                  onClick={() => setExpanded(true)}
-                  className="pokemon-card__toggle"
-                >
-                  {loadingEvolution
-                    ? "Loading Evolutions..."
-                    : "View Evolutions"}
-                </button>
-              )} */}
-
-              {evolutionChain.length > 1 && expanded && (
+              {/* Evolution Chain */}
+              {evolutionChain.length > 0 && (
                 <div className="pokemon-card__evolutions">
                   {(() => {
-                    const currentIndex = evolutionChain.indexOf(details.name);
-                    const previousEvolution =
-                      currentIndex > 0
-                        ? evolutionChain[currentIndex - 1]
-                        : null;
-                    const nextEvolution =
-                      currentIndex < evolutionChain.length - 1
-                        ? evolutionChain[currentIndex + 1]
-                        : null;
-
-                    return (
-                      <>
-                        {/* Next Evolution */}
-                        {nextEvolution && (
-                          <div>
-                            <p>
-                              <strong>Next Evolution:</strong>
-                            </p>
-                            <button
-                              onClick={() => navigateEvolution(nextEvolution)}
-                              className="pokemon-card__evolution-button"
-                            >
-                              {nextEvolution.charAt(0).toUpperCase() +
-                                nextEvolution.slice(1)}
-                            </button>
-                          </div>
-                        )}
-
-                        {/* Previous Evolution */}
-                        {previousEvolution && (
-                          <div>
-                            <p>
-                              <strong>Previous Evolution:</strong>
-                            </p>
-                            <button
-                              onClick={() =>
-                                navigateEvolution(previousEvolution)
-                              }
-                              className="pokemon-card__evolution-button"
-                            >
-                              {previousEvolution.charAt(0).toUpperCase() +
-                                previousEvolution.slice(1)}
-                            </button>
-                          </div>
-                        )}
-                      </>
+                    const relevantPaths = evolutionChain.filter((path) =>
+                      path.includes(details.name)
                     );
+
+                    if (relevantPaths.length === 0) return null;
+
+                    return relevantPaths.map((path, pathIndex) => {
+                      const currentIndex = path.indexOf(details.name);
+                      const previousEvolution =
+                        currentIndex > 0 ? path[currentIndex - 1] : null;
+                      const nextEvolutions = [];
+
+                      // Get all potential next evolutions from all paths
+                      evolutionChain.forEach((evoPath) => {
+                        const index = evoPath.indexOf(details.name);
+                        if (index >= 0 && index < evoPath.length - 1) {
+                          const nextEvo = evoPath[index + 1];
+                          if (!nextEvolutions.includes(nextEvo)) {
+                            nextEvolutions.push(nextEvo);
+                          }
+                        }
+                      });
+
+                      return (
+                        <div
+                          key={pathIndex}
+                          className="pokemon-card__evolution-path"
+                        >
+                          {/* Previous Evolution */}
+                          {previousEvolution && (
+                            <div className="pokemon-card__evolution-group">
+                              <p>
+                                <strong>Previous Evolution:</strong>
+                              </p>
+                              <button
+                                onClick={() =>
+                                  navigateEvolution(previousEvolution)
+                                }
+                                className="pokemon-card__evolution-button"
+                              >
+                                {previousEvolution.charAt(0).toUpperCase() +
+                                  previousEvolution.slice(1)}
+                              </button>
+                            </div>
+                          )}
+
+                          {/* Next Evolutions */}
+                          {nextEvolutions.length > 0 && (
+                            <div className="pokemon-card__evolution-group">
+                              <p>
+                                <strong>
+                                  Next Evolution
+                                  {nextEvolutions.length > 1 ? "s" : ""}:
+                                </strong>
+                              </p>
+                              <div className="pokemon-card__evolution-buttons">
+                                {nextEvolutions.map((evolution, index) => (
+                                  <button
+                                    key={index}
+                                    onClick={() => navigateEvolution(evolution)}
+                                    className="pokemon-card__evolution-button"
+                                  >
+                                    {evolution.charAt(0).toUpperCase() +
+                                      evolution.slice(1)}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })[0];
                   })()}
                 </div>
               )}
