@@ -108,13 +108,22 @@ const PokemonCard = ({ name, url }) => {
               <p>
                 <strong>Base Stats:</strong>
               </p>
-              <ul>
+              <div className="stats-container">
                 {details.stats.map((stat) => (
-                  <li key={stat.stat.name}>
-                    {stat.stat.name}: {stat.base_stat}
-                  </li>
+                  <div key={stat.stat.name} className="stat-item">
+                    <div className="stat-header">
+                      <span className="stat-name">{stat.stat.name}</span>
+                      <span className="stat-value">{stat.base_stat}</span>
+                    </div>
+                    <div className="stat-bar">
+                      <div
+                        className="stat-bar__fill"
+                        style={{ width: `${(stat.base_stat / 255) * 100}%` }}
+                      />
+                    </div>
+                  </div>
                 ))}
-              </ul>
+              </div>
 
               {/* Evolution Navigation */}
               {/* {evolutionChain.length > 1 && (
