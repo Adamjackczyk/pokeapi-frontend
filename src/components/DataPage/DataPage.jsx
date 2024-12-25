@@ -94,23 +94,29 @@ const DataPage = () => {
       <h2 className="data-page__title">Pokémon List</h2>
       <SearchBar searchTerm={searchTerm} handleSearch={handleSearch} />
       {error && <p className="data-page__error">{error}</p>}
+
       <div className="pokemon-grid">
         {filteredPokemon.map((poke, index) => (
           <PokemonCard key={index} name={poke.name} url={poke.url} />
         ))}
       </div>
+
       {loading && <Preloader />}
-      {!loading && !allLoaded && (
-        <button className="show-more-button" onClick={handleShowMore}>
-          Show More
-        </button>
-      )}
+
+      <div className="button-container">
+        {!loading && !allLoaded && (
+          <button className="show-more-button" onClick={handleShowMore}>
+            Show More
+          </button>
+        )}
+        {pokemon.length > 0 && (
+          <button className="clear-cache-button" onClick={handleClearCache}>
+            Clear Cache
+          </button>
+        )}
+      </div>
+
       {allLoaded && <p className="all-loaded">All Pokémon loaded.</p>}
-      {pokemon.length > 0 && (
-        <button className="clear-cache-button" onClick={handleClearCache}>
-          Clear Cache
-        </button>
-      )}
     </div>
   );
 };
