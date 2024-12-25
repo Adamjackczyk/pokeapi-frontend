@@ -1,9 +1,8 @@
 .data-page {
   text-align: center;
-  margin-top: 50px;
-  padding: 0 20px;
+  padding: 20px;
   max-width: 1200px;
-  margin: 40px auto;
+  margin: 0 auto;
 }
 
 .data-page__title {
@@ -19,12 +18,11 @@
 
 .pokemon-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   margin: 32px 0;
 }
 
-/* Button Container */
 .button-container {
   display: flex;
   gap: 16px;
@@ -32,7 +30,6 @@
   margin: 32px 0;
 }
 
-/* Show More Button */
 .show-more-button {
   background-color: var(--secondary-color);
   color: white;
@@ -51,7 +48,6 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Clear Cache Button */
 .clear-cache-button {
   background-color: var(--text-secondary);
   color: white;
@@ -70,7 +66,6 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* All Loaded Message */
 .all-loaded {
   color: var(--text-secondary);
   font-size: 16px;
@@ -78,23 +73,36 @@
   font-style: italic;
 }
 
-/* Error Message */
 .data-page__error {
   color: var(--error-color);
   margin: 24px 0;
   font-size: 16px;
 }
 
-@media (max-width: 768px) {
-  .data-page {
-    margin: 24px auto;
+/* Large Screens */
+@media (min-width: 1441px) {
+  .pokemon-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 32px;
   }
+}
 
+/* Medium Screens */
+@media (max-width: 1200px) {
+  .pokemon-grid {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+  }
+}
+
+/* Tablets */
+@media (max-width: 768px) {
   .data-page__title {
-    font-size: 24px;
+    font-size: 28px;
   }
 
   .pokemon-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 16px;
   }
 
@@ -103,11 +111,20 @@
     align-items: center;
   }
 
-  .show-more-button,
-  .clear-cache-button {
+  .button-container button {
     width: 100%;
     max-width: 300px;
-    padding: 10px 24px;
-    font-size: 14px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .data-page__title {
+    font-size: 24px;
+  }
+
+  .pokemon-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
 }
