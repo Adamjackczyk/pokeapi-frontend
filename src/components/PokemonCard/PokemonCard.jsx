@@ -8,6 +8,7 @@ const PokemonCard = ({ name, url }) => {
   const [loadingDetails, setLoadingDetails] = useState(false);
   const [evolutionChain, setEvolutionChain] = useState([]);
   const [loadingEvolution, setLoadingEvolution] = useState(false);
+  const [isShiny, setIsShiny] = useState(false);
 
   // Function to fetch Pokémon details
   const fetchDetails = async (pokemonName) => {
@@ -66,6 +67,14 @@ const PokemonCard = ({ name, url }) => {
     return evolutionPaths;
   };
 
+  //function to get the correct sprite URL
+  const getSpriteUrl = () => {
+    if (!details?.id) return "";
+    return isShiny
+      ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/${details.id}.png`
+      : `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${details.id}.png`;
+  };
+
   // Navigate to a specific Pokémon in the evolution chain
   const navigateEvolution = async (pokemonName) => {
     await fetchDetails(pokemonName);
@@ -80,11 +89,20 @@ const PokemonCard = ({ name, url }) => {
   return (
     <div className="pokemon-card">
       {/* Basic Pokémon Info */}
-      <img
-        src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${details?.id}.png`}
-        alt={`${details?.name} sprite`}
-        className="pokemon-card__image"
-      />
+      <div className="pokemon-card__image-container">
+        <img
+          src={getSpriteUrl()}
+          alt={`${details?.name} ${isShiny ? "shiny" : ""} sprite`}
+          className="pokemon-card__image"
+        />
+        <button
+          className="shiny-toggle"
+          onClick={() => setIsShiny(!isShiny)}
+          aria-label={isShiny ? "Show normal version" : "Show shiny version"}
+        >
+          {isShiny ? "⭐" : "✨"}
+        </button>
+      </div>
       <h3 className="pokemon-card__name">
         {details?.name?.charAt(0).toUpperCase() + details?.name?.slice(1)}
       </h3>

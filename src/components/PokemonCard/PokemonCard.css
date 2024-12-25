@@ -143,6 +143,54 @@
   transform: scale(1.05);
 }
 
+.pokemon-card__image-container {
+  position: relative;
+  width: fit-content;
+  margin: 0 auto 16px;
+}
+
+.shiny-toggle {
+  position: absolute;
+  top: 8px;
+  right: -8px; /* Adjust based on your card padding */
+  background-color: var(--accent-color);
+  color: var(--text-primary);
+  border: none;
+  padding: 4px 12px;
+  border-radius: 15px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+
+.shiny-toggle:hover {
+  background-color: var(--accent-dark);
+  color: white;
+  transform: scale(1.05);
+}
+
+/* Add a subtle animation for the sprite change */
+.pokemon-card__image {
+  margin: 0;
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+/* Add a sparkle effect when shiny */
+.pokemon-card__image[alt*="shiny"] {
+  filter: brightness(1.1);
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  .shiny-toggle {
+    padding: 3px 10px;
+    font-size: 11px;
+  }
+}
+
 @keyframes slideUp {
   from {
     transform: translateY(20px);
