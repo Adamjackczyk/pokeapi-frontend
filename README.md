@@ -1,70 +1,81 @@
-# Getting Started with Create React App
+# PokéAPI Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+An interactive web application to explore Pokémon data using the PokéAPI. Users can search for Pokémon, view detailed stats, and explore their evolution chains. The application is responsive and optimized for various screen sizes.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+- **Pokémon Data Integration:**
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+  - Fetch and display Pokémon data from the [PokéAPI](https://pokeapi.co/).
+  - Show Pokémon stats, types, and abilities in an organized card layout.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- **Interactive Search and Filtering:**
 
-### `npm test`
+  - Search Pokémon by name with instant results.
+  - Filter Pokémon by attributes (planned for future updates).
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **Detailed Pokémon View:**
 
-### `npm run build`
+  - Toggle shiny sprites for Pokémon.
+  - Explore evolution chains with navigation buttons.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **UI/UX Enhancements:**
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+  - Responsive design for mobile, tablet, and desktop.
+  - Smooth transitions, preloader for loading states, and a "Back to Top" button.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- **Performance Features:**
+  - LocalStorage caching for fetched Pokémon data.
+  - Incremental "Show More" button for loading additional Pokémon.
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Tech Stack
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- **Frontend Framework:** React.js
+- **Routing:** React Router
+- **Styling:** CSS with BEM methodology
+- **API:** [PokéAPI](https://pokeapi.co/)
+- **Build Tools:** Create React App
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+---
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Setup Instructions
 
-## Learn More
+Follow these steps to set up and run the project locally:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+1. Clone the repository:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+   ```bash
+   git clone https://github.com/yourusername/pokeapi-frontend.git
 
-### Code Splitting
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+2. Navigate to the project directory:
+   cd pokeapi-frontend
 
-### Analyzing the Bundle Size
+3. Install the dependencies:
+   npm install
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+4. Start the development server:
+   npm start
 
-### Making a Progressive Web App
+The app will be available at http://localhost:3000.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Usage
+Explore Pokémon:
 
-### Advanced Configuration
+Visit the homepage to browse Pokémon.
+Use the "Show More" button to load additional Pokémon.
+Search Pokémon:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Enter a Pokémon's name in the search bar to find specific Pokémon.
+View Pokémon Details:
 
-### Deployment
+Click "Show Details" to see stats, abilities, and evolution information.
+Toggle shiny sprites by clicking the shiny button.
+Clear Cached Data:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Use the "Clear Cache" button on the Pokémon Data page to reset the cached Pokémon data.
