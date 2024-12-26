@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
 import "./PokemonCard.css";
 
@@ -7,47 +7,9 @@ const PokemonCard = ({ name, url }) => {
   const [details, setDetails] = useState(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
   const [evolutionChain, setEvolutionChain] = useState([]);
-  const [loadingEvolution, setLoadingEvolution] = useState(false);
   const [isShiny, setIsShiny] = useState(false);
 
-  // Function to fetch Pokémon details
-  const fetchDetails = async (pokemonName) => {
-    setLoadingDetails(true);
-    try {
-      const response = await fetch(
-        `https://pokeapi.co/api/v2/pokemon/${pokemonName.toLowerCase()}`
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch Pokémon details");
-      }
-      const data = await response.json();
-      setDetails(data);
-      await fetchEvolutionChain(data.species.url);
-    } catch (error) {
-      console.error("Error fetching Pokémon details:", error);
-    } finally {
-      setLoadingDetails(false);
-    }
-  };
-
-  // Function to fetch the evolution chain
-  const fetchEvolutionChain = async (speciesUrl) => {
-    setLoadingEvolution(true);
-    try {
-      const speciesResponse = await fetch(speciesUrl);
-      const speciesData = await speciesResponse.json();
-      const evolutionResponse = await fetch(speciesData.evolution_chain.url);
-      const evolutionData = await evolutionResponse.json();
-      const paths = flattenEvolutionChain(evolutionData.chain);
-      setEvolutionChain(paths);
-    } catch (error) {
-      console.error("Error fetching evolution chain:", error);
-    } finally {
-      setLoadingEvolution(false);
-    }
-  };
-
-  // Function to flatten the evolution chain into multiple paths
+  // Function to flatten the evolution chain
   const flattenEvolutionChain = (chain) => {
     const evolutionPaths = [];
 
@@ -67,34 +29,77 @@ const PokemonCard = ({ name, url }) => {
     return evolutionPaths;
   };
 
-  //function to get the correct sprite URL
+  // Function to fetch the evolution chain
+  const fetchEvolutionChain = useCallback(async (speciesUrl) => {
+    try {
+      const speciesResponse = await fetch(speciesUrl);
+      const speciesData = await speciesResponse.json();
+      const evolutionResponse = await fetch(speciesData.evolution_chain.url);
+      const evolutionData = await evolutionResponse.json();
+      const paths = flattenEvolutionChain(evolutionData.chain);
+      setEvolutionChain(paths);
+    } catch (error) {
+      console.error("Error fetching evolution chain:", error);
+    }
+  }, []);
+
+  // Function to fetch Pokémon details
+  const fetchDetails = useCallback(
+    async (pokemonName) => {
+      setLoadingDetails(true);
+      try {
+        const response = await fetch(
+          `https://pokeapi.co/api/v2/pokemon/${pokemonName.toLowerCase()}`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch Pokémon details");
+        }
+        const data = await response.json();
+        setDetails(data);
+        await fetchEvolutionChain(data.species.url);
+      } catch (error) {
+        console.error("Error fetching Pokémon details:", error);
+      } finally {
+        setLoadingDetails(false);
+      }
+    },
+    [fetchEvolutionChain]
+  );
+
+  // Navigate to a specific Pokémon in the evolution chain
+  const navigateEvolution = useCallback(
+    async (pokemonName) => {
+      await fetchDetails(pokemonName);
+      setExpanded(true);
+    },
+    [fetchDetails]
+  );
+
+  // Get sprite URL based on shiny state
   const getSpriteUrl = () => {
-    if (!details?.id) return "";
+    if (!details?.id) return null;
     return isShiny
       ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/${details.id}.png`
       : `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${details.id}.png`;
   };
 
-  // Navigate to a specific Pokémon in the evolution chain
-  const navigateEvolution = async (pokemonName) => {
-    await fetchDetails(pokemonName);
-    setExpanded(true);
-  };
-
   // Fetch initial Pokémon details
   useEffect(() => {
     fetchDetails(name);
-  }, [name]);
+  }, [name, fetchDetails]);
 
   return (
     <div className="pokemon-card">
-      {/* Basic Pokémon Info */}
       <div className="pokemon-card__image-container">
-        <img
-          src={getSpriteUrl()}
-          alt={`${details?.name} ${isShiny ? "shiny" : ""} sprite`}
-          className="pokemon-card__image"
-        />
+        {details?.id ? (
+          <img
+            src={getSpriteUrl()}
+            alt={`${details.name} ${isShiny ? "shiny" : ""} sprite`}
+            className="pokemon-card__image"
+          />
+        ) : (
+          <div className="pokemon-card__image-placeholder"></div>
+        )}
         <button
           className="shiny-toggle"
           onClick={() => setIsShiny(!isShiny)}
@@ -103,11 +108,13 @@ const PokemonCard = ({ name, url }) => {
           {isShiny ? "⭐" : "✨"}
         </button>
       </div>
+
       <h3 className="pokemon-card__name">
-        {details?.name?.charAt(0).toUpperCase() + details?.name?.slice(1)}
+        {details?.name
+          ? details.name.charAt(0).toUpperCase() + details.name.slice(1)
+          : "Loading..."}
       </h3>
 
-      {/* Expand/Collapse Details Button */}
       <button
         className="pokemon-card__toggle"
         onClick={() => setExpanded(!expanded)}
@@ -115,7 +122,6 @@ const PokemonCard = ({ name, url }) => {
         {expanded ? "Hide Details" : "Show Details"}
       </button>
 
-      {/* Details Section */}
       {expanded && (
         <div className="pokemon-card__details">
           {loadingDetails ? (
@@ -150,7 +156,6 @@ const PokemonCard = ({ name, url }) => {
                 ))}
               </div>
 
-              {/* Evolution Chain */}
               {evolutionChain.length > 0 && (
                 <div className="pokemon-card__evolutions">
                   {(() => {
@@ -166,7 +171,6 @@ const PokemonCard = ({ name, url }) => {
                         currentIndex > 0 ? path[currentIndex - 1] : null;
                       const nextEvolutions = [];
 
-                      // Get all potential next evolutions from all paths
                       evolutionChain.forEach((evoPath) => {
                         const index = evoPath.indexOf(details.name);
                         if (index >= 0 && index < evoPath.length - 1) {
@@ -182,7 +186,6 @@ const PokemonCard = ({ name, url }) => {
                           key={pathIndex}
                           className="pokemon-card__evolution-path"
                         >
-                          {/* Previous Evolution */}
                           {previousEvolution && (
                             <div className="pokemon-card__evolution-group">
                               <p>
@@ -200,7 +203,6 @@ const PokemonCard = ({ name, url }) => {
                             </div>
                           )}
 
-                          {/* Next Evolutions */}
                           {nextEvolutions.length > 0 && (
                             <div className="pokemon-card__evolution-group">
                               <p>

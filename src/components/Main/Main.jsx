@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import SearchBar from "../SearchBar/SearchBar";
 import PokemonCard from "../PokemonCard/PokemonCard";
-import Preloader from "../Preloader/Preloader"; // Import your Preloader component
+import Preloader from "../Preloader/Preloader";
 import "./Main.css";
 
 const Main = () => {
@@ -10,15 +10,17 @@ const Main = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Function to fetch Pokémon by name
+  // Function to search for Pokémon
   const searchPokemon = async (name) => {
+    if (!name.trim()) return;
+
     setLoading(true);
     setError(null);
     setSearchedPokemon(null);
 
     try {
       const response = await fetch(
-        `https://pokeapi.co/api/v2/pokemon/${name.toLowerCase()}`
+        `https://pokeapi.co/api/v2/pokemon/${name.toLowerCase().trim()}`
       );
       if (!response.ok) {
         throw new Error("Pokémon not found");
@@ -34,20 +36,17 @@ const Main = () => {
 
   // Handle search input change
   const handleSearch = (e) => {
-    const value = e.target.value;
-    setSearchTerm(value);
+    setSearchTerm(e.target.value);
+  };
 
-    if (value.trim()) {
-      searchPokemon(value);
-    } else {
-      setSearchedPokemon(null);
-      setError(null);
-    }
+  // Handle form submit
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    searchPokemon(searchTerm);
   };
 
   return (
     <main className="main">
-      {/* Welcoming Introduction */}
       <section className="main__intro">
         <h1 className="main__intro-title">
           Welcome to the World of Pokémon! 🌟
@@ -55,18 +54,26 @@ const Main = () => {
         <p className="main__intro-text">
           Discover the fascinating world of Pokémon with our interactive site.
           Search for your favorite Pokémon, learn about their stats, and explore
-          a growing collection of creatures from the PokeAPI. Whether you're a
+          a growing collection of creatures from the PokéAPI. Whether you're a
           seasoned Trainer or a curious newcomer, there's something here for
           everyone!
         </p>
       </section>
 
-      {/* Search Bar */}
       <section className="main__search">
         <h2 className="main__search-title">Find Your Favorite Pokémon</h2>
-        <SearchBar searchTerm={searchTerm} handleSearch={handleSearch} />
+        <form onSubmit={handleSubmit} className="search-form">
+          <SearchBar
+            searchTerm={searchTerm}
+            handleSearch={handleSearch}
+            placeholder="Enter a Pokémon name..."
+          />
+          <button type="submit" className="search-button">
+            Search
+          </button>
+        </form>
         <div className="main__search-results">
-          {loading && <Preloader />} {/* Use your Preloader component here */}
+          {loading && <Preloader />}
           {error === "not_found" && (
             <div className="main__ditto-placeholder">
               <img
@@ -74,7 +81,7 @@ const Main = () => {
                 alt="Ditto sprite"
                 className="main__ditto-image"
               />
-              <p className="main__ditto-text">???</p>
+              <p className="main__ditto-text">Pokémon not found!</p>
             </div>
           )}
           {searchedPokemon && (

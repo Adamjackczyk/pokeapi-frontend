@@ -2,9 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 import "./SearchBar.css";
 
-const SearchBar = ({ searchTerm, handleSearch }) => {
+const SearchBar = ({ searchTerm, handleSearch, placeholder }) => {
   return (
-    <form className="search-form" onSubmit={(e) => e.preventDefault()}>
+    <div className="search-bar">
       <label htmlFor="search-input" className="search-label">
         Search Pokémon:
       </label>
@@ -12,18 +12,18 @@ const SearchBar = ({ searchTerm, handleSearch }) => {
         type="text"
         id="search-input"
         className="search-input"
-        placeholder="Enter Pokémon name"
+        placeholder={placeholder || "Enter Pokémon name"}
         value={searchTerm}
         onChange={handleSearch}
-        required
       />
-    </form>
+    </div>
   );
 };
 
 SearchBar.propTypes = {
   searchTerm: PropTypes.string.isRequired,
   handleSearch: PropTypes.func.isRequired,
+  placeholder: PropTypes.string,
 };
 
 export default SearchBar;
