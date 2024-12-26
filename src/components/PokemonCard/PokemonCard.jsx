@@ -69,6 +69,7 @@ const PokemonCard = ({ name, url }) => {
   // Navigate to a specific Pokémon in the evolution chain
   const navigateEvolution = useCallback(
     async (pokemonName) => {
+      setIsShiny(false);
       await fetchDetails(pokemonName);
       setExpanded(true);
     },
